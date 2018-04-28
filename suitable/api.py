@@ -29,8 +29,16 @@ class ServerContainer(object):
 
     def __init__(self, server_list):
         for conn_info in server_list:
-            if ':' in conn_info:
+            # IPv6  <[IPv6]:port>
+            if conn_info.startswith('['):
+                host, port = conn_info.rsplit(':', 1)
+                host = host.strip('[]')
+
+            # IPv4 or domain name  <host:port>
+            elif ':' in conn_info:
                 host, port = conn_info.split(':')
+
+            # without port  <host>
             else:
                 host, port = conn_info, None
 
